@@ -1,0 +1,30 @@
+services:
+  sourdough_db:
+    image: postgres:17-alpine
+    container_name: sourdough_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-sourdough_db}
+      PGDATA: /data/postgres
+    volumes:
+      - sourdough_postgres_data:/data/postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - sourdough_network
+    restart: unless-stopped
+    labels:
+      - "app=sourdough"
+      - "component=database"
+
+networks:
+  sourdough_network:
+    name: sourdough_network
+    driver: bridge
+    labels:
+      - "app=sourdough"
+
+volumes:
+  sourdough_postgres_data:
+    name: sourdough_postgres_data
